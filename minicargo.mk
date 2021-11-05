@@ -54,8 +54,10 @@ else
 endif
 ifeq ($(RUSTC_VERSION),1.54.0)
   RUST_LIB_PREFIX := library/
+  RUSTC_SRC_PREFIX := compiler/rustc/
 else
   RUST_LIB_PREFIX := src/lib
+  RUSTC_SRC_PREFIX := src/rustc
 endif
 
 LLVM_CONFIG := $(RUSTCSRC)build/bin/llvm-config
@@ -130,7 +132,7 @@ RUSTC_ENV_VARS += RUSTC_INSTALL_BINDIR=bin
 
 $(OUTDIR)rustc: $(MRUSTC) $(MINICARGO) LIBS $(LLVM_CONFIG)
 	mkdir -p $(OUTDIR)rustc-build
-	$(RUSTC_ENV_VARS) $(MINICARGO) $(RUSTCSRC)src/rustc --vendor-dir $(VENDOR_DIR) --output-dir $(OUTDIR)rustc-build -L $(OUTDIR) $(MINICARGO_FLAGS)
+	$(RUSTC_ENV_VARS) $(MINICARGO) $(RUSTCSRC)$(RUSTC_SRC_PREFIX) --vendor-dir $(VENDOR_DIR) --output-dir $(OUTDIR)rustc-build -L $(OUTDIR) $(MINICARGO_FLAGS)
 	test ! $(OUTDIR)rustc-build/$(RUSTC_OUT_BIN) -nt $@ || cp $(OUTDIR)rustc-build/$(RUSTC_OUT_BIN) $@
 $(OUTDIR)rustc-build/librustc_driver.rlib: $(MRUSTC) $(MINICARGO) LIBS
 	mkdir -p $(OUTDIR)rustc-build
